@@ -40,12 +40,47 @@ def main():
                  count("利用店名・商品名") FROM pay GROUP BY "利用日/キャンセル日", \
                  "利用店名・商品名" ORDER BY "利用日/キャンセル日"')
 
+    datelist = list()
     for x in cur.fetchall():
         print(*x)
+        datelist.append(x[0])
+
+    datelist = list(set(datelist))
+    datelist.sort()
 
     cur.execute('SELECT sum("支払総額") FROM pay')
     # Use 'format' for use astarisk
     print('Total: {}'.format(*cur.fetchone()))
+
+    # Top 3 stores that paid most
+    cur.execute('SELECT "利用店名・商品名", count("利用店名・商品名") FROM pay GROUP BY "利用店名・商品名" ORDER BY count("利用店名・商品名") DESC')
+
+    top3 = list()
+    for x in cur.fetchall()[:3]:
+        top3.append(x[0])
+
+    no1_list = list()
+    no2_list = list()
+    no3_list = list()
+
+    for i,x in enumerate(top3):
+        cur.execute('SELECT "利用日/キャンセル日", ?, sum(CASE WHEN "利用店名・商品名" = ? THEN "支払総額" ELSE 0 END) FROM pay \
+                    GROUP BY "利用日/キャンセル日", ? ORDER BY "利用日/キャンセル日"', [x,x,x])
+
+        # Create paymant list
+        for y in cur.fetchall():
+            if i == 0:
+                no1_list.append(y[2])
+            elif i == 1:
+                no2_list.append(y[2])
+            else:
+                no3_list.append(y[2])
+
+    i = 0
+    for t in [no1_list, no2_list, no3_list]:
+        if len(t) != 0:
+            print(datelist, t, f'label={top3[i]}')
+            i += 1
 
     con.close()
 
