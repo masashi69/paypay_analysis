@@ -1,7 +1,8 @@
 import sys
 import sqlite3
 import datetime
-
+import matplotlib.pyplot as plt
+import japanize_matplotlib
 
 def subDateisoformat(d):
     df = datetime.datetime.strptime(d, '%Y/%m/%d')
@@ -76,13 +77,20 @@ def main():
             else:
                 no3_list.append(y[2])
 
-    i = 0
-    for t in [no1_list, no2_list, no3_list]:
+    for i,t in enumerate([no1_list, no2_list, no3_list]):
         if len(t) != 0:
-            print(datelist, t, f'label={top3[i]}')
-            i += 1
+            plt.bar(datelist, t, label=f'{top3[i]}')
+
 
     con.close()
+
+    plt.title('今月のPayPay支払い')
+    plt.ylabel('円(￥)')
+    plt.xticks(rotation=45)
+    plt.legend(loc='upper left', ncols=3, fontsize=6)
+    plt.tick_params(labelsize=6)
+    plt.ylim(0, max(no1_list) * 1.5)
+    plt.show()
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
