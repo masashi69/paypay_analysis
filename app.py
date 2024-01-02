@@ -10,16 +10,15 @@ def subDateisoformat(d):
 
     return datetime.date(sub_y, sub_m, sub_d).isoformat()
 
-
-def main():
+def openFile():
     # Delete BOM in file
     with open(sys.argv[1], 'r', encoding='utf-8-sig') as f:
         csvfile = f.readlines()
 
-    con = sqlite3.connect(':memory:')
-    cur = con.cursor()
+    return csvfile
 
-    for n, c in enumerate(csvfile):
+def insertData(infile):
+    for n, c in enumerate(infile):
         field = c.split(',')
         if n == 0:
             headers = (field[0], field[1], field[6])
@@ -37,6 +36,7 @@ def main():
             insert_row = (field[0], field[1], field[6])
             cur.execute('INSERT INTO pay VALUES (?,?,?)', insert_row)
 
+def shapeingData():
     cur.execute('SELECT "利用日/キャンセル日", "利用店名・商品名", sum("支払総額"), \
                  count("利用店名・商品名") FROM pay GROUP BY "利用日/キャンセル日", \
                  "利用店名・商品名" ORDER BY "利用日/キャンセル日"')
@@ -53,8 +53,13 @@ def main():
     # Use 'format' for use astarisk
     print('Total: {}'.format(*cur.fetchone()))
 
+    return datelist
+
+def createGraph(datelist):
     # Top 3 stores that paid most
-    cur.execute('SELECT "利用店名・商品名", count("利用店名・商品名") FROM pay GROUP BY "利用店名・商品名" ORDER BY count("利用店名・商品名") DESC')
+    cur.execute('SELECT "利用店名・商品名", count("利用店名・商品名") \
+                FROM pay GROUP BY "利用店名・商品名" ORDER BY \
+                count("利用店名・商品名") DESC')
 
     top3 = list()
     for x in cur.fetchall()[:3]:
@@ -64,9 +69,11 @@ def main():
     no2_list = list()
     no3_list = list()
 
-    for i,x in enumerate(top3):
-        cur.execute('SELECT "利用日/キャンセル日", ?, sum(CASE WHEN "利用店名・商品名" = ? THEN "支払総額" ELSE 0 END) FROM pay \
-                    GROUP BY "利用日/キャンセル日", ? ORDER BY "利用日/キャンセル日"', [x,x,x])
+    for i, store in enumerate(top3):
+        cur.execute('SELECT "利用日/キャンセル日", ?, \
+                    sum(CASE WHEN "利用店名・商品名" = ? THEN "支払総額" \
+                    ELSE 0 END) FROM pay GROUP BY "利用日/キャンセル日", \
+                    ? ORDER BY "利用日/キャンセル日"', [store,store,store])
 
         # Create paymant list
         for y in cur.fetchall():
@@ -77,12 +84,9 @@ def main():
             else:
                 no3_list.append(y[2])
 
-    for i,t in enumerate([no1_list, no2_list, no3_list]):
-        if len(t) != 0:
-            plt.bar(datelist, t, label=f'{top3[i]}')
-
-
-    con.close()
+    for i, subtotal in enumerate([no1_list, no2_list, no3_list]):
+        if len(subtotal) != 0:
+            plt.bar(datelist, subtotal, label=f'{top3[i]}')
 
     plt.title('今月のPayPay支払い')
     plt.ylabel('円(￥)')
@@ -91,6 +95,21 @@ def main():
     plt.tick_params(labelsize=6)
     plt.ylim(0, max(no1_list) * 1.5)
     plt.show()
+
+
+def main():
+    global cur
+
+    con = sqlite3.connect(':memory:')
+    cur = con.cursor()
+
+    csvfile = openFile()
+    insertData(csvfile)
+    datelist = shapeingData()
+    createGraph(datelist)
+
+    con.close()
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
