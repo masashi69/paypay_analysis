@@ -6,8 +6,17 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 #from kivy.uix.button import Button
 #from kivy.uix.widget import Widget
 from kivy.config import Config
+import os
 
 class Main(Screen):
+
+    def open(self, path, filename):
+        with open(os.path.join(path, filename[0]), encoding='utf-8-sig') as f:
+            print(f.readlines())
+
+    def selected(self, filename):
+        print(f'selected {filename}')
+
     pass
 
 class Analized(Screen):
