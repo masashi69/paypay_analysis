@@ -42,8 +42,9 @@ def shapeingData(cur):
                  "利用店名・商品名" ORDER BY "利用日/キャンセル日"')
 
     datelist = list()
+    contentslist = list()
     for x in cur.fetchall():
-        print(*x)
+        contentslist.append(x)
         datelist.append(x[0])
 
     datelist = list(set(datelist))
@@ -51,9 +52,9 @@ def shapeingData(cur):
 
     cur.execute('SELECT sum("支払総額") FROM pay')
     # Use 'format' for use astarisk
-    print('Total: {}'.format(*cur.fetchone()))
+    total = 'Total: {}'.format(*cur.fetchone())
 
-    return datelist
+    return datelist, contentslist, total
 
 def createGraph(datelist):
     # Top 3 stores that paid most
@@ -105,7 +106,12 @@ def main():
 
     csvfile = openFile()
     insertData(csvfile, cur)
-    datelist = shapeingData(cur)
+    datelist, contentslist, total = shapeingData(cur)
+    for x in contentslist:
+        print(*x)
+
+    print(total)
+
     createGraph(datelist)
 
     con.close()
