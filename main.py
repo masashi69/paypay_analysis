@@ -9,6 +9,7 @@ from kivy.config import Config
 import os
 import app
 import sqlite3
+import japanize_kivy
 
 class Main(Screen):
 
@@ -19,13 +20,20 @@ class Main(Screen):
         return csvfile
 
     def createdb(self, afile):
-        global cur
-
         con = sqlite3.connect(':memory:')
         cur = con.cursor()
 
         app.insertData(afile, cur)
-        app.shapeingData(cur)
+        #selected = app.shapeingData(cur)
+        cur.execute('SELECT "利用日/キャンセル日", "利用店名・商品名", sum("支払総額"), \
+                 count("利用店名・商品名") FROM pay GROUP BY "利用日/キャンセル日", \
+                 "利用店名・商品名" ORDER BY "利用日/キャンセル日"')
+
+        res = ''
+        for x in cur.fetchall():
+            res += f'{x[0]} {x[1]} {x[2]} {x[3]}\n'
+
+        self.manager.get_screen('analize').ids.result.text = res
 
         con.close()
 
