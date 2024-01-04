@@ -17,7 +17,7 @@ def openFile():
 
     return csvfile
 
-def insertData(infile):
+def insertData(infile, cur):
     for n, c in enumerate(infile):
         field = c.split(',')
         if n == 0:
@@ -36,7 +36,7 @@ def insertData(infile):
             insert_row = (field[0], field[1], field[6])
             cur.execute('INSERT INTO pay VALUES (?,?,?)', insert_row)
 
-def shapeingData():
+def shapeingData(cur):
     cur.execute('SELECT "利用日/キャンセル日", "利用店名・商品名", sum("支払総額"), \
                  count("利用店名・商品名") FROM pay GROUP BY "利用日/キャンセル日", \
                  "利用店名・商品名" ORDER BY "利用日/キャンセル日"')
@@ -104,8 +104,8 @@ def main():
     cur = con.cursor()
 
     csvfile = openFile()
-    insertData(csvfile)
-    datelist = shapeingData()
+    insertData(csvfile, cur)
+    datelist = shapeingData(cur)
     createGraph(datelist)
 
     con.close()
