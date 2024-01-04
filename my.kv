@@ -5,8 +5,33 @@ WindowManager:
 
 <Main>:
     name: 'main'
+    id: main
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Top page'
+            id: label
+        Button:
+            text: 'Select import file'
+            on_release: main.open(fc.path, fc.selection)
+        Button:
+            text: 'Select table'
+            on_release: main.createdb(main.open(fc.path, fc.selection))
+        FileChooserListView:
+            id: fc
+            path: '$HOME/tools/python/paypay_analysis'
+            filters: ['*.csv']
+            #on_selection: main.selected(fc.selection)
+
 
 <Analized>:
     name: 'analize'
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: ''
+            id: result
 
 
