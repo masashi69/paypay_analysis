@@ -7,15 +7,27 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 #from kivy.uix.widget import Widget
 from kivy.config import Config
 import os
+import app
+import sqlite3
 
 class Main(Screen):
 
     def open(self, path, filename):
         with open(os.path.join(path, filename[0]), encoding='utf-8-sig') as f:
-            print(f.readlines())
+            csvfile = f.readlines()
 
-    def selected(self, filename):
-        print(f'selected {filename}')
+        return csvfile
+
+    def createdb(self, afile):
+        global cur
+
+        con = sqlite3.connect(':memory:')
+        cur = con.cursor()
+
+        app.insertData(afile, cur)
+        app.shapeingData(cur)
+
+        con.close()
 
     pass
 
