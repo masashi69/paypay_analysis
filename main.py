@@ -10,6 +10,9 @@ import os
 import app
 import sqlite3
 import japanize_kivy
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+import matplotlib.pyplot as plt
+#matplotlib.use('module://kivy.garden.matplotlib.backend_kivy')
 
 class Main(Screen):
 
@@ -24,17 +27,20 @@ class Main(Screen):
         cur = con.cursor()
 
         app.insertData(afile, cur)
-        #selected = app.shapeingData(cur)
-        cur.execute('SELECT "利用日/キャンセル日", "利用店名・商品名", sum("支払総額"), \
-                 count("利用店名・商品名") FROM pay GROUP BY "利用日/キャンセル日", \
-                 "利用店名・商品名" ORDER BY "利用日/キャンセル日"')
+        dates, contents, t = app.shapeingData(cur)
 
         res = ''
-        for x in cur.fetchall():
+        for x in contents:
             res += f'{x[0]} {x[1]} {x[2]} {x[3]}\n'
 
         self.manager.get_screen('analize').ids.result.text = res
 
+        p = app.createGraph(dates, cur)
+
+        widget = FigureCanvasKivyAgg(p.gcf())
+
+        self.manager.get_screen('analize').ids.plot.add_widget(widget)
+        #ids.plot = p.show()
         con.close()
 
     pass
