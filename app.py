@@ -56,7 +56,7 @@ def shapeingData(cur):
 
     return datelist, contentslist, total
 
-def createGraph(datelist):
+def createGraph(datelist, cur):
     # Top 3 stores that paid most
     cur.execute('SELECT "利用店名・商品名", count("利用店名・商品名") \
                 FROM pay GROUP BY "利用店名・商品名" ORDER BY \
@@ -95,7 +95,9 @@ def createGraph(datelist):
     plt.legend(loc='upper left', ncols=3, fontsize=6)
     plt.tick_params(labelsize=6)
     plt.ylim(0, max(no1_list) * 1.5)
-    plt.show()
+    #plt.show()
+
+    return plt
 
 
 def main():
@@ -112,7 +114,8 @@ def main():
 
     print(total)
 
-    createGraph(datelist)
+    p = createGraph(datelist, cur)
+    p.show()
 
     con.close()
 
