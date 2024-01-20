@@ -3,6 +3,7 @@ import sqlite3
 import datetime
 import matplotlib.pyplot as plt
 import japanize_matplotlib
+import os
 
 def subDateisoformat(d):
     df = datetime.datetime.strptime(d, '%Y/%m/%d')
@@ -121,6 +122,10 @@ def main():
 
 
 if __name__ == '__main__':
+    # view plot for Ubuntu desktop
+    if os.name == 'posix':
+        os.environ["XDG_SESSION_TYPE"] = "xcd"
+
     if len(sys.argv) < 2:
         print('Be specify csvfile.')
         sys.exit(1)
