@@ -10,6 +10,7 @@ import os
 import app
 import sqlite3
 import japanize_matplotlib
+import japanize_kivy
 from kivy_garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 #matplotlib.use('module://kivy.garden.matplotlib.backend_kivy')
