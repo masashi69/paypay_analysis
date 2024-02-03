@@ -17,7 +17,9 @@ WindowManager:
             on_release: main.open(fc.path, fc.selection)
         Button:
             text: 'Select table'
-            on_release: main.createdb(main.open(fc.path, fc.selection))
+            on_release: 
+                main.createdb(main.open(fc.path, fc.selection))
+                root.manager.current = 'analize'
         FileChooserListView:
             id: fc
             path: '../ドキュメント/paypay/'
@@ -33,5 +35,7 @@ WindowManager:
         Label:
             text: ''
             id: result
+        BoxLayout:
+            id: plot
 
 
