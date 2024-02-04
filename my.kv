@@ -9,6 +9,11 @@ WindowManager:
 
     BoxLayout:
         orientation: 'vertical'
+        Button:
+            text: 'exit'
+            on_press: app.stop()
+            size: 75, 50
+            size_hint: None, None
         Label:
             text: 'PayPay明細描画ツール'
             id: label
