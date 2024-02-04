@@ -17,7 +17,7 @@ WindowManager:
             on_release: main.open(fc.path, fc.selection)
         Button:
             text: 'Select table'
-            on_release: 
+            on_release:
                 main.createdb(main.open(fc.path, fc.selection))
                 root.manager.current = 'analize'
         FileChooserListView:
@@ -32,6 +32,11 @@ WindowManager:
 
     BoxLayout:
         orientation: 'vertical'
+        Button:
+            text: '戻る'
+            on_press: root.manager.current = 'main'
+            size: 75, 50
+            size_hint: None, None
         Label:
             text: ''
             id: result
