@@ -37,6 +37,11 @@ WindowManager:
             on_press: root.manager.current = 'main'
             size: 75, 50
             size_hint: None, None
+        Button:
+            text: 'exit'
+            on_press: app.stop()
+            size: 75, 50
+            size_hint: None, None
         Label:
             text: ''
             id: result
