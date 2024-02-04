@@ -32,16 +32,20 @@ WindowManager:
 
     BoxLayout:
         orientation: 'vertical'
-        Button:
-            text: '戻る'
-            on_press: root.manager.current = 'main'
+        BoxLayout:
             size: 75, 50
             size_hint: None, None
-        Button:
-            text: 'exit'
-            on_press: app.stop()
-            size: 75, 50
-            size_hint: None, None
+            orientation: 'horizontal'
+            Button:
+                text: '戻る'
+                on_press: root.manager.current = 'main'
+                size: 75, 50
+                size_hint: None, None
+            Button:
+                text: 'exit'
+                on_press: app.stop()
+                size: 75, 50
+                size_hint: None, None
         Label:
             text: ''
             id: result
