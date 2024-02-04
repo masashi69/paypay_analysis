@@ -10,16 +10,18 @@ WindowManager:
     BoxLayout:
         orientation: 'vertical'
         Label:
-            text: 'Top page'
+            text: 'PayPay明細描画ツール'
             id: label
+            size_hint_y: 0.1
+        #Button:
+        #    text: 'Select import file'
+        #    on_release: main.open(fc.path, fc.selection)
         Button:
-            text: 'Select import file'
-            on_release: main.open(fc.path, fc.selection)
-        Button:
-            text: 'Select table'
+            text: '明細選択'
             on_release:
                 main.createdb(main.open(fc.path, fc.selection))
                 root.manager.current = 'analize'
+            size_hint_y: 0.2
         FileChooserListView:
             id: fc
             path: '../ドキュメント/paypay/'
