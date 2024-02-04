@@ -6,6 +6,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 #from kivy.uix.button import Button
 #from kivy.uix.widget import Widget
 from kivy.config import Config
+from kivy.core.window import Window
+from kivy.utils import platform
 import os
 import app
 import sqlite3
@@ -56,6 +58,10 @@ kv = Builder.load_file('my.kv')
 
 class AnalizeApp(App):
     def build(self):
+        if platform == 'android' or platform == 'ios':
+            Window.maximize()
+        else:
+            Window.size = (620, 1024)
 
         return kv
 
